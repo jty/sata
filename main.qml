@@ -1,13 +1,12 @@
 import QtQuick 2.12
-import QtQuick.Window 2.12
-import QtMultimedia 5.12
+import QtMultimedia 5.15
+import QtQml 2.15
 
-Window {
+Rectangle {
     id: main
     width: 480
     height: 480
     visible: true
-    title: count
     property color textColor: "white"
     property color bkgColor: "black"
     property int count: 100
