@@ -4,7 +4,7 @@ import QtMultimedia 5.12
 
 Window {
     id: main
-    width: 640
+    width: 480
     height: 480
     visible: true
     title: count
@@ -114,7 +114,7 @@ Window {
         Text {
             anchors.fill: parent
             color: main.textColor
-            font.pixelSize: height / 10;
+            font.pixelSize: width / 16;
             text: "Klikkaa niin aletaan juomaan"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
