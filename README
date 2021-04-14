@@ -1,1 +1,6 @@
 Satahaaste-juomapelin ajastin gongilla
+
+
+Note:
+MacOS installable image sata.dmg contains distributable Qt 5.15.2 libraries and files that are not covered by the MIT license.
+See https://qt.io for licensing.
