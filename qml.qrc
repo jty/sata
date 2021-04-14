@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>gong.wav</file>
+        <file>beer.mp4</file>
     </qresource>
 </RCC>

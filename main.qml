@@ -1,20 +1,23 @@
 import QtQuick 2.12
 import QtMultimedia 5.15
 import QtQml 2.15
+import QtQuick.Window 2.12
 
-Rectangle {
+Window {
     id: main
     width: 480
     height: 480
-    visible: true
     property color textColor: "white"
     property color bkgColor: "black"
     property int count: 100
     property int secMax: 60
     property int elapsed: 0
-    property int seconds: 0
+    property int seconds: secMax
     property real beerFill: main.seconds / main.secMax
     property real drunkFill: main.elapsed / main.count
+    color: bkgColor
+    visible: true
+    title: count
     Rectangle {
         id: sec
         anchors.left: parent.left
@@ -29,12 +32,30 @@ Rectangle {
             }
         }
         Rectangle {
+            id: backdrop
+            color: "#FFA900"
+            anchors.fill: parent
+        }
+
+        Video {
             id: beer
-            anchors.bottom: sec.bottom
+            source: "qrc:/beer.mp4"
+            autoPlay: true
+            loops: MediaPlayer.Infinite
+            anchors.fill: parent
+            fillMode: VideoOutput.PreserveAspectCrop
+            flushMode: VideoOutput.LastFrame
+            muted: true;
+            autoLoad: true;
+        }
+
+        Rectangle {
+            id: beerCurtain
+            anchors.top: sec.top
             anchors.left: sec.left
             anchors.right: sec.right
-            height: main.beerFill * sec.height
-            color: "#e78e18"
+            height: (1 - main.beerFill) * sec.height
+            color: main.bkgColor
             Behavior on height {
                 SmoothedAnimation {
                     duration: 800
@@ -57,14 +78,26 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: sec.bottom
         anchors.bottom: parent.bottom
-        color: main.bkgColor
+        anchors.topMargin: 2
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop {
+                position: 0.0;
+                color: "white";
+            }
+            GradientStop {
+                position: 1.0;
+                color: "red";
+            }
+        }
+
         Rectangle {
             id: drunk
             anchors.top: minute.top
-            anchors.left: minute.left
+            anchors.right: minute.right
             anchors.bottom: minute.bottom
-            width: main.drunkFill * minute.width
-            color: "red"
+            width: (1 - main.drunkFill) * minute.width
+            color: main.bkgColor
             Behavior on width {
                 SmoothedAnimation {
                     duration: 3000
@@ -90,7 +123,7 @@ Rectangle {
     Timer {
         id: tick
         interval: 1000;
-        running: false;
+        running: start.running;
         repeat: true;
         triggeredOnStart: true;
         onTriggered: {
@@ -106,27 +139,25 @@ Rectangle {
         }
     }
 
-    Rectangle {
+    Text {
         id: start;
+        property bool running: false;
+        visible: !running
+        anchors.fill: sec
+        color: main.textColor
+        font.pixelSize: width / 16;
+        text: "Klikkaa niin aletaan juomaan"
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignBottom
+    }
+    MouseArea {
+        id: click;
         anchors.fill: parent
-        color: main.bkgColor
-        Text {
-            anchors.fill: parent
-            color: main.textColor
-            font.pixelSize: width / 16;
-            text: "Klikkaa niin aletaan juomaan"
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+        onClicked: {
+            start.running = !start.running;
+            start.running ? beer.play() : beer.pause();
+            start.text = "Kusitauko, klikkaa niin jatketaan";
         }
-        MouseArea {
-            id: click;
-            anchors.fill: parent
-            onClicked: {
-                start.visible = false;
-                tick.running = true;
-            }
-        }
-
     }
 
 }
